@@ -1,0 +1,17 @@
+# Libre WebUI + Ollama — one-command local AI chat
+# Source: https://github.com/libre-webui/libre-webui
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes: [ollama-data:/root/.ollama]
+    ports: ["11434:11434"]
+  libre-webui:
+    image: ghcr.io/libre-webui/libre-webui:latest
+    depends_on: [ollama]
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+    ports: ["3000:3000"]
+    volumes: [webui-data:/app/backend/data]
+volumes: {ollama-data:, webui-data:}
+# Run: docker compose up -d, then open http://localhost:3000
+# Then pull a model: docker exec -it <ollama-container> ollama pull qwen2.5:7b
